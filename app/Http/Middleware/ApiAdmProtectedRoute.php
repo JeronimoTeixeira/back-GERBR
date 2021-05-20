@@ -21,20 +21,20 @@ class ApiAdmProtectedRoute extends BaseMiddleware
     {
         try{
             $user = JWTAuth::parseToken()->authenticate();
-            $adm = DB::table('users_adms')->where('id_users',$user['id'])->first();
+            $adm = DB::table('administrators')->where('id_user',$user['id'])->first();
             if(!$adm){
-                return response()->json(['status'=> 'User is not administrator']);
+                return response()->json(['status'=> 'User is not administrator'],401);
             }
         }
         catch(\Exception $e){
             if($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException){
-                return response()->json(['status'=> 'Token Invalid']);
+                return response()->json(['status'=> 'Token Invalid'],401);
             }
             else if($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException){
-                return response()->json(['status' => 'Token is Expired']);
+                return response()->json(['status' => 'Token is Expired'],401);
             }
             else{
-                return response()->json(['status' => 'Authorization Token not found']);
+                return response()->json(['status' => 'Authorization Token not found'],401);
             }
         }
         return $next($request);

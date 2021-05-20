@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUsersAdmsTable extends Migration
+class CreateAdministratorsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class CreateUsersAdmsTable extends Migration
      */
     public function up()
     {
-        Schema::create('users_adms', function (Blueprint $table) {
+        Schema::create('administrators', function (Blueprint $table) {
             $table->id();
-            $table->BigInteger('id_users')->nullable();
+            $table->unsignedBigInteger('id_user')->nullable()->unique();
             $table->timestamps();
-
-            $table->unique(['id_users']);
+            
+            $table->foreign('id_user')->references('id')->on('users');
         });
     }
 
@@ -29,6 +29,6 @@ class CreateUsersAdmsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users_adms');
+        Schema::dropIfExists('administrators');
     }
 }
