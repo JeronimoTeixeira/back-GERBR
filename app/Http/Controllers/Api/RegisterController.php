@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use Exception;
 class RegisterController extends Controller
 {
 
@@ -37,9 +38,15 @@ class RegisterController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show()
     {
-        //
+        try{
+            $value = User::select('id', 'name')->get();
+            return response()->json(['value'=> $value]);
+        }
+        catch (Exception $e){
+            return response()->json(['error'=> "Ocorreu algum erro inesperado"],500);
+        }
     }
 
     /**
@@ -74,12 +81,17 @@ class RegisterController extends Controller
      */
     protected function create(Request $request)
     {
-        $credentials = $request->only(['name', 'email', 'password']);
-        $value =User::create([
-            'name' => $credentials['name'],
-            'email' => $credentials['email'],
-            'password' => Hash::make($credentials['password']),
-        ]);
-        return response()->json(['value'=> $value]);
+        try{
+            $credentials = $request->only(['name', 'email', 'password']);
+            $value =User::create([
+                'name' => $credentials['name'],
+                'email' => $credentials['email'],
+                'password' => Hash::make($credentials['password']),
+            ]);
+            return response()->json(['value'=> $value]);
+        }
+        catch (Exception $e){
+            return response()->json(['error'=> "Ocorreu algum erro inesperado"],500);
+        }
     }
 }
